@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FraudShield</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="card">
+    <h1>FraudShield</h1>
+    <p>Cloud ML Fraud Detection System</p>
+
+    <input type="number" id="amount" placeholder="Transaction Amount">
+    <input type="number" id="location" placeholder="Location Code">
+    <input type="number" id="type" placeholder="Transaction Type">
+
+    <button onclick="checkFraud()">Predict Fraud</button>
+
+    <div id="output"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

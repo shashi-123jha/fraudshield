@@ -1,0 +1,86 @@
+part ;- 1 
+while installing the pythioin in the backend 
+🔹 STEP 1: Go to backend folder
+
+In PowerShell / CMD:
+
+cd path\to\FraudShield\backend
+
+
+(Example)
+
+cd Desktop\FraudShield\backend
+
+🔹 STEP 2: Install using pip (THIS IS THE KEY)
+✔ Correct command
+python -m pip install flask flask-cors
+
+
+⛔ Do NOT type flask-cors alone again.
+
+🔹 STEP 3: Verify installation
+python -m pip show flask
+python -m pip show flask-cors
+
+
+If you see version info → ✅ installed.
+
+🔹 STEP 4: Test with Flask-CORS
+
+Update app.py:
+
+from flask import Flask
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/")
+def home():
+    return "CORS is working!"
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+Run:
+
+python app.py
+
+
+Open browser:
+
+http://127.0.0.1:5000
+
+
+If you see:
+
+CORS is working!
+
+
+🎉 Everything is fixed.
+
+🧠 Remember This Rule (IMPORTANT)
+
+Package name ≠ command
+
+Always install Python packages using:
+
+pip install package-name
+
+
+or
+
+python -m pip install package-name
+
+❓ If it STILL fails
+
+Paste the output of:
+
+python --version
+pip --version
+
+
+I’ll fix it with you step-by-step 👍
+
+============= part -2 ============================
