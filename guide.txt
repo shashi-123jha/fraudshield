@@ -84,3 +84,4 @@ pip --version
 I’ll fix it with you step-by-step 👍
 
 ============= part -2 ============================
+“I’m back, we finished backend setup, MongoDB connected, auth added, next step please”

@@ -1,35 +1,59 @@
 from flask import Flask, request, jsonify
-import pickle
-import numpy as np
+from flask_cors import CORS
+from datetime import datetime
+import joblib
+
+from db import transactions
+from auth import signup, login, token_required
 
 app = Flask(__name__)
+CORS(app)
 
-# Load ML model
-with open("fraud_model.pkl", "rb") as f:
-    model = pickle.load(f)
+model = joblib.load("fraud_model.pkl")
 
-@app.route('/')
+@app.route("/")
 def home():
-    return "FraudShield API is Running"
+    return "FraudShield Backend Running"
 
-@app.route('/predict', methods=['POST'])
+# AUTH
+@app.route("/signup", methods=["POST"])
+def signup_route():
+    return signup()
+
+@app.route("/login", methods=["POST"])
+def login_route():
+    return login()
+
+# PREDICT (USER)
+@app.route("/predict", methods=["POST"])
+@token_required(role="user")
 def predict():
     data = request.json
 
-    amount = data['amount']
-    location = data['location']
-    tx_type = data['type']
+    features = [
+        data["amount"],
+        data["transaction_type"],
+        data["location"],
+        data["time"]
+    ]
 
-    features = np.array([[amount, location, tx_type]])
-    prediction = model.predict(features)[0]
-    probability = model.predict_proba(features)[0][1]
-
+    prediction = model.predict([features])[0]
     result = "Fraudulent" if prediction == 1 else "Legitimate"
 
-    return jsonify({
+    transactions.insert_one({
+        **data,
         "prediction": result,
-        "confidence": round(probability * 100, 2)
+        "created_at": datetime.utcnow()
     })
+
+    return jsonify({"prediction": result})
+
+# ADMIN DASHBOARD
+@app.route("/admin/transactions", methods=["GET"])
+@token_required(role="admin")
+def admin_transactions():
+    data = list(transactions.find({}, {"_id": 0}))
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(debug=True)
