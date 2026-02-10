@@ -4,27 +4,25 @@ from datetime import datetime
 import joblib
 
 from db import transactions
-from auth import signup, login, token_required
+from auth import token_required
+from routes.auth_routes import auth_routes
 
 app = Flask(__name__)
 CORS(app)
 
+# Load ML model
 model = joblib.load("fraud_model.pkl")
 
 @app.route("/")
 def home():
     return "FraudShield Backend Running"
 
-# AUTH
-@app.route("/signup", methods=["POST"])
-def signup_route():
-    return signup()
+# Register Auth Blueprint
+app.register_blueprint(auth_routes, url_prefix="/api/auth")
 
-@app.route("/login", methods=["POST"])
-def login_route():
-    return login()
-
-# PREDICT (USER)
+# ==========================
+# USER PREDICTION ROUTE
+# ==========================
 @app.route("/predict", methods=["POST"])
 @token_required(role="user")
 def predict():
@@ -48,7 +46,9 @@ def predict():
 
     return jsonify({"prediction": result})
 
+# ==========================
 # ADMIN DASHBOARD
+# ==========================
 @app.route("/admin/transactions", methods=["GET"])
 @token_required(role="admin")
 def admin_transactions():
