@@ -1,9 +1,7 @@
 from pymongo import MongoClient
 
-MONGO_URI = "mongodb+srv://fraudshield:shashi123@fraudshield01.ckxahmm.mongodb.net/?retryWrites=true&w=majority"
-
-client = MongoClient(MONGO_URI)
+client = MongoClient("mongodb://localhost:27017/")
 db = client["fraudshield_db"]
 
-users = db["users"]
-transactions = db["transactions"]
+users_collection = db["users"]
+transactions_collection = db["transactions"]

@@ -7,18 +7,127 @@
 </head>
 <body>
 
-<div class="card">
-    <h1>FraudShield</h1>
-    <p>Cloud ML Fraud Detection System</p>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">🛡 FraudShield</div>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#check">Check Fraud</a></li>
+    </ul>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+</nav>
 
-    <input type="number" id="amount" placeholder="Transaction Amount">
-    <input type="number" id="location" placeholder="Location Code">
-    <input type="number" id="type" placeholder="Transaction Type">
+<!-- HERO -->
+<section id="home" class="hero">
+    <h1>AI Powered Fraud Detection</h1>
+    <p>Secure. Intelligent. Real-Time Protection.</p>
+    <a href="#check" class="btn">Get Started</a>
+</section>
 
-    <button onclick="checkFraud()">Predict Fraud</button>
+<!-- ABOUT -->
+<section id="about" class="section">
+    <h2>About FraudShield</h2>
+    <p>
+        FraudShield is a cloud-based machine learning system that detects 
+        fraudulent transactions using behavioral analysis and AI prediction.
+    </p>
+</section>
 
-    <div id="output"></div>
-</div>
+<!-- HOW IT WORKS -->
+<section id="how" class="section dark">
+    <h2>How It Works</h2>
+    <div class="steps">
+        <div class="step">
+            <h3>1️⃣ Secure Login</h3>
+            <p>JWT authentication ensures safe access.</p>
+        </div>
+        <div class="step">
+            <h3>2️⃣ Enter Details</h3>
+            <p>Transaction data is analyzed in real-time.</p>
+        </div>
+        <div class="step">
+            <h3>3️⃣ AI Decision</h3>
+            <p>Machine learning predicts fraud instantly.</p>
+        </div>
+    </div>
+</section>
+
+<!-- AUTH SECTION -->
+<section class="section">
+    <h2>Account Access</h2>
+    <div class="auth-container">
+
+        <div class="auth-box">
+            <h3>Signup</h3>
+            <input type="text" id="signupName" placeholder="Full Name">
+            <input type="email" id="signupEmail" placeholder="Email">
+            <input type="password" id="signupPassword" placeholder="Password">
+            <select id="signupRole">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+            <button onclick="signup()">Signup</button>
+        </div>
+
+        <div class="auth-box">
+            <h3>Login</h3>
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <button onclick="logout()" class="logout">Logout</button>
+        </div>
+
+    </div>
+</section>
+
+<!-- FRAUD CHECK -->
+<section id="check" class="section dark">
+    <h2>Check Transaction</h2>
+    <div class="card">
+
+        <input type="number" id="amount" placeholder="Transaction Amount">
+
+        <select id="type">
+            <option value="">Transaction Type</option>
+            <option value="1">POS Payment</option>
+            <option value="2">Online Shopping</option>
+            <option value="3">ATM Withdrawal</option>
+            <option value="4">International Transfer</option>
+            <option value="5">Crypto Transfer</option>
+        </select>
+
+        <select id="location">
+            <option value="">Location</option>
+            <option value="1">Same City</option>
+            <option value="2">Different State</option>
+            <option value="3">Different Country</option>
+        </select>
+
+        <select id="device">
+            <option value="">Device</option>
+            <option value="1">Registered Device</option>
+            <option value="2">New Device</option>
+        </select>
+
+        <input type="number" id="failedAttempts" placeholder="Failed Login Attempts">
+
+        <select id="time">
+            <option value="">Transaction Time</option>
+            <option value="1">Daytime</option>
+            <option value="2">Late Night</option>
+        </select>
+
+        <button onclick="checkFraud()">Analyze</button>
+
+        <h3 id="output"></h3>
+    </div>
+</section>
+
+<footer>
+    © 2026 FraudShield | Built by Shashi 🚀
+</footer>
 
 <script src="script.js"></script>
 </body>
