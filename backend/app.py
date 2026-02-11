@@ -32,7 +32,7 @@ def predict():
         data["amount"],
         data["transaction_type"],
         data["location"],
-        data["time"]
+       
     ]
 
     prediction = model.predict([features])[0]
