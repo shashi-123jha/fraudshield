@@ -1,33 +1,80 @@
-// =============================
+// =====================================
 // GLOBAL TOKEN
-// =============================
+// =====================================
 let token = localStorage.getItem("token") || null;
 
 
-// =============================
-// NAVBAR TOGGLE (Mobile)
-// =============================
+// =====================================
+// GSAP SETUP
+// =====================================
+gsap.registerPlugin(ScrollTrigger);
+
+// Navbar animation
+gsap.from(".navbar", {
+    y: -100,
+    opacity: 0,
+    duration: 1
+});
+
+// Hero animation
+gsap.from(".hero h1", {
+    y: 50,
+    opacity: 0,
+    duration: 1,
+    delay: 0.5
+});
+
+gsap.from(".hero p", {
+    y: 50,
+    opacity: 0,
+    duration: 1,
+    delay: 0.8
+});
+
+gsap.from(".btn", {
+    scale: 0,
+    opacity: 0,
+    duration: 0.8,
+    delay: 1.2
+});
+
+// Scroll reveal animation
+gsap.utils.toArray(".section").forEach(section => {
+    gsap.from(section, {
+        scrollTrigger: {
+            trigger: section,
+            start: "top 85%"
+        },
+        y: 60,
+        opacity: 0,
+        duration: 1
+    });
+});
+
+
+// =====================================
+// NAVBAR TOGGLE (Improved)
+// =====================================
 function toggleMenu() {
     const nav = document.getElementById("navLinks");
-
-    if (nav.style.display === "flex") {
-        nav.style.display = "none";
-    } else {
-        nav.style.display = "flex";
-        nav.style.flexDirection = "column";
-    }
+    nav.classList.toggle("show");
 }
 
 
-// =============================
+// =====================================
 // SIGNUP FUNCTION
-// =============================
+// =====================================
 async function signup() {
 
     const name = document.getElementById("signupName").value;
     const email = document.getElementById("signupEmail").value;
     const password = document.getElementById("signupPassword").value;
     const role = document.getElementById("signupRole").value;
+
+    if (!name || !email || !password) {
+        showMessage("Please fill all fields", "orange");
+        return;
+    }
 
     try {
         const response = await fetch("http://127.0.0.1:5000/api/auth/signup", {
@@ -39,24 +86,29 @@ async function signup() {
         const data = await response.json();
 
         if (response.status === 201) {
-            alert("Signup successful! Now login.");
+            showMessage("Signup successful! Please login.", "limegreen");
         } else {
-            alert(data.error || "Signup failed.");
+            showMessage(data.error || "Signup failed", "red");
         }
 
     } catch (error) {
-        alert("Server error during signup.");
+        showMessage("Server error during signup", "red");
     }
 }
 
 
-// =============================
+// =====================================
 // LOGIN FUNCTION
-// =============================
+// =====================================
 async function login() {
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+        showMessage("Enter email & password", "orange");
+        return;
+    }
 
     try {
         const response = await fetch("http://127.0.0.1:5000/api/auth/login", {
@@ -70,30 +122,36 @@ async function login() {
         if (response.ok && data.token) {
             token = data.token;
             localStorage.setItem("token", token);
-            alert("Login successful!");
+            showMessage("Login successful 🚀", "limegreen");
+
+            gsap.from(".auth-box", {
+                scale: 0.9,
+                duration: 0.4
+            });
+
         } else {
-            alert(data.error || "Invalid credentials.");
+            showMessage(data.error || "Invalid credentials", "red");
         }
 
     } catch (error) {
-        alert("Server error during login.");
+        showMessage("Server error during login", "red");
     }
 }
 
 
-// =============================
+// =====================================
 // LOGOUT
-// =============================
+// =====================================
 function logout() {
     localStorage.removeItem("token");
     token = null;
-    alert("Logged out successfully.");
+    showMessage("Logged out successfully 👋", "orange");
 }
 
 
-// =============================
-// FRAUD CHECK FUNCTION
-// =============================
+// =====================================
+// FRAUD CHECK FUNCTION (UPGRADED)
+// =====================================
 async function checkFraud() {
 
     const amountValue = document.getElementById("amount").value;
@@ -103,12 +161,22 @@ async function checkFraud() {
     const failedAttemptsValue = document.getElementById("failedAttempts").value;
     const timeValue = document.getElementById("time").value;
 
+    const output = document.getElementById("output");
     const savedToken = localStorage.getItem("token");
 
     if (!savedToken) {
-        alert("Please login first!");
+        showMessage("Please login first!", "orange");
         return;
     }
+
+    // Loading animation
+    output.innerHTML = "🔍 AI is scanning transaction...";
+    output.style.color = "#38bdf8";
+
+    gsap.fromTo("#output",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.5 }
+    );
 
     try {
         const response = await fetch("http://127.0.0.1:5000/predict", {
@@ -128,7 +196,6 @@ async function checkFraud() {
         });
 
         const data = await response.json();
-        const output = document.getElementById("output");
 
         if (response.ok) {
 
@@ -144,21 +211,56 @@ async function checkFraud() {
                 output.style.color = "limegreen";
             }
 
+            gsap.fromTo("#output",
+                { scale: 0 },
+                { scale: 1.1, duration: 0.4, yoyo: true, repeat: 1 }
+            );
+
         } else {
             output.innerHTML = data.error;
             output.style.color = "orange";
         }
 
     } catch (error) {
-        console.error(error);
-        alert("Server error during prediction.");
+        showMessage("Server error during prediction", "red");
     }
 }
 
 
-// =============================
+// =====================================
+// CUSTOM MESSAGE FUNCTION (No alerts)
+// =====================================
+function showMessage(text, color) {
+
+    const message = document.createElement("div");
+    message.innerText = text;
+    message.style.position = "fixed";
+    message.style.bottom = "20px";
+    message.style.right = "20px";
+    message.style.background = "rgba(0,0,0,0.8)";
+    message.style.color = color;
+    message.style.padding = "12px 20px";
+    message.style.borderRadius = "10px";
+    message.style.zIndex = "2000";
+    message.style.boxShadow = "0 0 15px " + color;
+
+    document.body.appendChild(message);
+
+    gsap.from(message, { y: 50, opacity: 0, duration: 0.4 });
+
+    setTimeout(() => {
+        gsap.to(message, {
+            opacity: 0,
+            duration: 0.5,
+            onComplete: () => message.remove()
+        });
+    }, 2500);
+}
+
+
+// =====================================
 // AUTO CHECK LOGIN STATUS
-// =============================
+// =====================================
 window.onload = function () {
     if (token) {
         console.log("User already logged in.");
